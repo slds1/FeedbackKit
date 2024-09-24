@@ -4,19 +4,25 @@
 import UIKit
 import SwiftUI
 
-enum FeedbackType {
+public enum FeedbackType {
     case light
     case medium
     case hard
     case custom(Int)
 }
 
-struct FeedbackModifier: ViewModifier {
+public struct FeedbackModifier: ViewModifier {
     @Binding var trigger: Bool
     var type: FeedbackType
     var hapticValue: Int?
 
-    func body(content: Content) -> some View {
+    public init(trigger: Binding<Bool>, type: FeedbackType = .hard, hapticValue: Int? = nil) {
+        self._trigger = trigger
+        self.type = type
+        self.hapticValue = hapticValue
+    }
+
+    public func body(content: Content) -> some View {
         content
             .onChange(of: trigger) { newValue in
                 if newValue {
@@ -59,9 +65,8 @@ struct FeedbackModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func feedback(trigger: Binding<Bool>, type: FeedbackType = .hard, haptic: Int? = nil) -> some View {
         self.modifier(FeedbackModifier(trigger: trigger, type: type, hapticValue: haptic))
     }
 }
-
